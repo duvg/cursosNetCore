@@ -1,17 +1,23 @@
 @model IEnumerable<cursosNetCore.Models.Category>
 
 
-<p>
-    <a asp-action="Create">Create New </a>
-</p>
+<a asp-action="Create" class="btn btn-primary float-left"> <i class="fas fa-file"></i> Nuevo</a>
+<form asp-action="Index" method="get" class="float-right form-inline"  >
+    <input type="text" class="form-control" placeholder="Búsqueda" name="searchString" value="@ViewData["CurrentFilter"]"/>
+    &nbsp;
+    <button type="submit" class="btn btn-primary"> <i class="fas fa-search"></i> Buscar</button>
+    &nbsp;
+    <a asp-action="Index">Todos los registros</a>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]"> @Html.DisplayNameFor(model => model.Name)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionSortParam"]"> @Html.DisplayNameFor(model => model.Description)</a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Status)
@@ -33,9 +39,9 @@
                     @Html.DisplayFor(modelItem => item.Status)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.CategoryID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.CategoryID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.CategoryID">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.CategoryID" class="badge badge-success"> <i class="fas fa-edit"></i> Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.CategoryID" class="badge badge-primary"> <i class="fas fa-list"></i> Detalles</a> |
+                    <a asp-action="Delete" asp-route-id="@item.CategoryID" class="badge badge-danger"> <i class="fas fa-trash"></i> Eliminar</a>
                 </td>
             </tr>
         }

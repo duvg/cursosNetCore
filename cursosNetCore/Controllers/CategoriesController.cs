@@ -20,9 +20,38 @@ namespace cursosNetCore.Controllers
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
-            return View(await _context.Category.ToListAsync());
+            ViewData["NameSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
+            ViewData["DescriptionSortParam"] = sortOrder == "description_asc" ? "description_desc" : "description_asc";
+            ViewData["CurrentFilter"] = searchString;
+
+            // Get all categories
+            var categories = from s in _context.Category select s;
+
+            if ( ! String.IsNullOrEmpty(searchString))
+            {
+                categories = categories.Where(s => s.Name.Contains(searchString) || s.Description.Contains(searchString));
+            }
+
+            // Select filter order
+            switch (sortOrder)
+            {
+                case "nombre_desc":
+                    categories = categories.OrderByDescending(s => s.Name);
+                    break;
+                case "description_desc":
+                    categories = categories.OrderByDescending(s => s.Description);
+                    break;
+                case "description_asc":
+                    categories = categories.OrderBy(s => s.Description);
+                    break;
+                default:
+                    categories = categories.OrderBy(s => s.Name);
+                    break;
+            }
+
+            return View(await categories.AsNoTracking().ToListAsync());
         }
 
         // GET: Categories/Details/5

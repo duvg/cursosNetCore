@@ -29,6 +29,8 @@ namespace cursosNetCore
 
             services.AddDbContext<DataContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DataContext")));
+
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
         }
     
 
