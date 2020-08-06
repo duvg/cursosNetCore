@@ -1,4 +1,4 @@
-@model IEnumerable<cursosNetCore.Models.Category>
+@model Pagination<cursosNetCore.Models.Category>
 
 
 <a asp-action="Create" class="btn btn-primary float-left"> <i class="fas fa-file"></i> Nuevo</a>
@@ -7,20 +7,20 @@
     &nbsp;
     <button type="submit" class="btn btn-primary"> <i class="fas fa-search"></i> Buscar</button>
     &nbsp;
-    <a asp-action="Index">Todos los registros</a>
+    <a asp-action="Index">Todos los registros</a> | Total de Registros @Model.TotalR
 </form>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]"> @Html.DisplayNameFor(model => model.Name)</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]"> Nombre</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionSortParam"]"> @Html.DisplayNameFor(model => model.Description)</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionSortParam"]" asp-route-currnetFilter="@ViewData["CurrentFilter"]"> Descripción</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Status)
+                Estado
             </th>
             <th></th>
         </tr>
@@ -39,12 +39,46 @@
                     @Html.DisplayFor(modelItem => item.Status)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.CategoryID" class="badge badge-success"> <i class="fas fa-edit"></i> Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.CategoryID" class="badge badge-primary"> <i class="fas fa-list"></i> Detalles</a> |
-                    <a asp-action="Delete" asp-route-id="@item.CategoryID" class="badge badge-danger"> <i class="fas fa-trash"></i> Eliminar</a>
+                    <a asp-action="Edit" asp-route-id="@item.CategoryID" class="badge badge-success">
+                        <i class="fas fa-edit"></i> Editar
+                    </a> |
+                    <a asp-action="Details" asp-route-id="@item.CategoryID" class="badge badge-primary">
+                        <i class="fas fa-list"></i> Detalles
+                    </a> |
+                    <a asp-action="Delete" asp-route-id="@item.CategoryID" class="badge badge-danger">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-ation="Index"
+   asp-route-order="@ViewData["CurrentSort"]"
+   asp-route-page="@Model.PageIndex - 1"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-primary @nextDisabled">
+    <i class="fas fa-chevron-left"></i> Anterior
+</a>
+ @for (int i = 1; i <= Model.TotalPages; i++)
+ {
+     <a asp-action="Index"
+        asp-route-sortOrder="@ViewData["CurrentSort"]"
+        asp-route-page="@i"
+        asp-route-currentFilter="@ViewData["CurrentFilter"]"
+        class="btn btn-primary">@i
+    </a>
+ }
+<a asp-action="Index"
+   asp-route-order="@ViewData["CurrentSort"]"
+   asp-route-page="@Model.PageIndex + 1"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class=" btn bt-primary">
+    <i class="fas fa-chevron-right"></i> Siguiente
+</a>
 

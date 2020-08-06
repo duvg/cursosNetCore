@@ -20,11 +20,27 @@ namespace cursosNetCore.Controllers
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index(string sortOrder, string searchString)
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? page)
         {
             ViewData["NameSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nombre_desc" : "";
             ViewData["DescriptionSortParam"] = sortOrder == "description_asc" ? "description_desc" : "description_asc";
+
+            // show first page for filter
+            if ( ! String.IsNullOrEmpty(searchString))
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
             ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentSort"] = sortOrder;
 
             // Get all categories
             var categories = from s in _context.Category select s;
@@ -51,7 +67,9 @@ namespace cursosNetCore.Controllers
                     break;
             }
 
-            return View(await categories.AsNoTracking().ToListAsync());
+            // return View(await categories.AsNoTracking().ToListAsync());
+            int pageSize = 5;
+            return View(await Pagination<Category>.CreateAsync(categories.AsNoTracking(), page ?? 1, pageSize));
         }
 
         // GET: Categories/Details/5
